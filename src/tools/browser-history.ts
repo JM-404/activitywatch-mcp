@@ -1,14 +1,15 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { findBucket, query, listBuckets, AWClientError } from "../aw-client.js";
-import { getLocalDateString, toISOPeriod, secondsToHours, textResult, errorResult } from "../utils.js";
+import { toISOPeriod, textResult, errorResult } from "../utils.js";
+import { parseSingleDate } from "../time-parser.js";
 
 export function registerBrowserHistory(server: McpServer): void {
   server.tool(
     "get_browser_history",
     "Get browser browsing history with top domains visited. Requires the ActivityWatch browser extension to be installed.",
     {
-      date: z.string().optional().describe("ISO date (YYYY-MM-DD). Defaults to today."),
+      date: z.string().optional().describe("Date: YYYY-MM-DD or natural language (today, yesterday). Defaults to today."),
       domain: z.string().optional().describe("Filter by specific domain (e.g., 'github.com')."),
     },
     async ({ date, domain }) => {
@@ -26,7 +27,7 @@ export function registerBrowserHistory(server: McpServer): void {
           });
         }
 
-        const dateStr = getLocalDateString(date);
+        const dateStr = parseSingleDate(date);
         const period = toISOPeriod(dateStr);
 
         // Query browser events, aggregate by domain (url field)

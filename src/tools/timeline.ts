@@ -1,21 +1,22 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { query, AWClientError } from "../aw-client.js";
-import { getLocalDateString, toISOPeriod, truncateTitle, formatTime, textResult, errorResult } from "../utils.js";
+import { toISOPeriod, truncateTitle, formatTime, textResult, errorResult } from "../utils.js";
+import { parseSingleDate } from "../time-parser.js";
 
 export function registerTimeline(server: McpServer): void {
   server.tool(
     "get_timeline",
     "Get a detailed activity timeline for a specific day, showing what apps and windows were used chronologically",
     {
-      date: z.string().optional().describe("ISO date (YYYY-MM-DD). Defaults to today."),
+      date: z.string().optional().describe("Date: YYYY-MM-DD or natural language (today, yesterday). Defaults to today."),
       start_time: z.string().optional().describe("Start time filter (HH:MM). Defaults to 00:00."),
       end_time: z.string().optional().describe("End time filter (HH:MM). Defaults to 23:59."),
       min_duration_seconds: z.number().optional().describe("Minimum event duration in seconds. Defaults to 60."),
     },
     async ({ date, start_time, end_time, min_duration_seconds }) => {
       try {
-        const dateStr = getLocalDateString(date);
+        const dateStr = parseSingleDate(date);
         const period = toISOPeriod(dateStr);
         const minDuration = min_duration_seconds ?? 60;
 

@@ -1,18 +1,19 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { findBucket, query, AWClientError } from "../aw-client.js";
-import { getLocalDateString, toISOPeriod, secondsToHours, formatTime, textResult, errorResult } from "../utils.js";
+import { toISOPeriod, secondsToHours, formatTime, textResult, errorResult } from "../utils.js";
+import { parseSingleDate } from "../time-parser.js";
 
 export function registerDaySummary(server: McpServer): void {
   server.tool(
     "get_day_summary",
     "Get a summary of app usage for a specific day, including top apps, active/AFK hours, and first/last active times",
     {
-      date: z.string().optional().describe("ISO date (YYYY-MM-DD). Defaults to today."),
+      date: z.string().optional().describe("Date: YYYY-MM-DD or natural language (today, yesterday). Defaults to today."),
     },
     async ({ date }) => {
       try {
-        const dateStr = getLocalDateString(date);
+        const dateStr = parseSingleDate(date);
         const period = toISOPeriod(dateStr);
 
         const windowBucket = await findBucket("aw-watcher-window_");

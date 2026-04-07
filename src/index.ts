@@ -7,10 +7,12 @@ import { registerDaySummary } from "./tools/day-summary.js";
 import { registerCategoryTime } from "./tools/category-time.js";
 import { registerTimeline } from "./tools/timeline.js";
 import { registerBrowserHistory } from "./tools/browser-history.js";
+import { registerManageCategories } from "./tools/manage-categories.js";
+import { registerProjectTime } from "./tools/project-time.js";
 
 const server = new McpServer({
   name: "activitywatch-mcp",
-  version: "1.0.0",
+  version: "1.1.0",
 });
 
 // Register all tools
@@ -19,6 +21,8 @@ registerDaySummary(server);
 registerCategoryTime(server);
 registerTimeline(server);
 registerBrowserHistory(server);
+registerManageCategories(server);
+registerProjectTime(server);
 
 async function main() {
   const transport = new StdioServerTransport();

@@ -2,7 +2,8 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { query, AWClientError } from "../aw-client.js";
 import { getAppsForCategory, getCategories } from "../categories.js";
-import { getLocalDateString, toISOPeriod, toDateRangePeriods, daysAgo, secondsToHours, textResult, errorResult } from "../utils.js";
+import { toDateRangePeriods, secondsToHours, textResult, errorResult } from "../utils.js";
+import { parseTimeRange } from "../time-parser.js";
 
 export function registerCategoryTime(server: McpServer): void {
   server.tool(
@@ -12,13 +13,25 @@ export function registerCategoryTime(server: McpServer): void {
       category: z.string().describe(
         `Activity category or app name. Built-in categories: ${Object.keys(getCategories()).join(", ")}. Or use any app name directly.`
       ),
-      start_date: z.string().optional().describe("Start date (YYYY-MM-DD). Defaults to 7 days ago."),
-      end_date: z.string().optional().describe("End date (YYYY-MM-DD). Defaults to today."),
+      start_date: z.string().optional().describe("Start date: YYYY-MM-DD or natural language (today, yesterday, this_week, last_week, this_month, last_month, last_7_days, last_30_days). Defaults to last_7_days."),
+      end_date: z.string().optional().describe("End date: YYYY-MM-DD or natural language. Defaults to today."),
     },
     async ({ category, start_date, end_date }) => {
       try {
-        const startStr = start_date || daysAgo(7);
-        const endStr = getLocalDateString(end_date);
+        let startStr: string;
+        let endStr: string;
+
+        if (start_date && !end_date) {
+          // If only start_date is given, parse it as a range (e.g. "this_week" -> start..end)
+          const range = parseTimeRange(start_date);
+          startStr = range.start;
+          endStr = range.end;
+        } else {
+          const startRange = parseTimeRange(start_date || "last_7_days");
+          const endRange = parseTimeRange(end_date || "today");
+          startStr = startRange.start;
+          endStr = endRange.end;
+        }
 
         // Determine which apps to filter
         const categoryApps = getAppsForCategory(category);

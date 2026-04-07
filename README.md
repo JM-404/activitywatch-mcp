@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="./README.md">English</a> | <a href="./README_zh.md">中文</a>
+</p>
+
 <h1 align="center">🔍 ActivityWatch MCP Server</h1>
 
 <p align="center">
@@ -39,6 +43,8 @@ Once connected, your AI companion can answer questions like:
 - 🌙 *"What time did I stop working last night?"*
 - 🔍 *"Show me everything I did between 2pm and 5pm yesterday."*
 - 🌐 *"What websites did I spend the most time on?"*
+- 📁 *"Which projects did I work on this week?"*
+- 🏷️ *"Add Cursor to my coding category."*
 
 Your AI knows what you *do*, not just what you *say*. It can notice patterns you miss — like when you've been coding for 5 hours straight without a break.
 
@@ -90,7 +96,7 @@ Returns the currently active app, window title, duration, and AFK status.
 
 Top apps by usage time, total active/AFK hours, first and last active timestamps.
 
-**Parameters:** `date` (optional, YYYY-MM-DD, defaults to today)
+**Parameters:** `date` (optional, defaults to today)
 
 ### `get_category_time`
 > *"How many hours did I code this week?"*
@@ -125,6 +131,26 @@ Chronological list of app switches with window titles and durations.
 Top domains by time spent. Requires the [ActivityWatch browser extension](https://docs.activitywatch.net/en/latest/getting-started.html).
 
 **Parameters:** `date`, `domain` (optional filter)
+
+### `manage_categories`
+> *"Add Cursor to my coding category."*
+
+View and modify activity category mappings at runtime. Changes persist to `~/.activitywatch-mcp/categories.json`.
+
+**Parameters:** `action` (`list` | `add` | `remove` | `update`), `category`, `apps`
+
+### `get_project_time`
+> *"Which projects did I work on this week?"*
+
+Coding time broken down by project/repository. Extracts project names from IDE window titles (VS Code, Cursor, PyCharm, Xcode, Terminal).
+
+**Parameters:** `start_date`, `end_date` (optional)
+
+### Natural language dates
+
+All date parameters accept natural language in addition to `YYYY-MM-DD`:
+
+`today`, `yesterday`, `this_week`, `last_week`, `this_month`, `last_month`, `last_7_days`, `last_30_days`
 
 ## Environment Variables
 
