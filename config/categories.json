@@ -1,0 +1,8 @@
+{
+  "coding": ["Visual Studio Code", "PyCharm", "Terminal", "iTerm2", "Cursor", "Warp", "Xcode", "IntelliJ IDEA"],
+  "browsing": ["Google Chrome", "Safari", "Firefox", "Arc", "Microsoft Edge"],
+  "communication": ["WeChat", "Slack", "Discord", "Telegram", "Messages", "Mail", "Zoom", "Microsoft Teams"],
+  "entertainment": ["Bilibili", "YouTube", "Spotify", "Music", "Netflix", "IINA", "VLC"],
+  "writing": ["Obsidian", "Notion", "Typora", "Microsoft Word", "Pages", "Bear"],
+  "design": ["Figma", "Sketch", "Canva", "Adobe Photoshop", "Adobe Illustrator"]
+}
